@@ -1,4 +1,4 @@
-use std::f64::consts::LN_2;
+use std::f64::consts::{E, LN_2};
 use std::hash::Hash;
 use std::marker::PhantomData;
 
@@ -60,8 +60,7 @@ impl<T: Hash> BloomFilter<T> {
     /// Calculates the current expected false positive rate given the number of items in the
     /// filter.
     pub fn false_positive_rate(&self) -> f64 {
-        (1_f64 - std::f64::consts::E.powf(-1_f64 * self.k as f64 * self.n as f64 / self.m as f64))
-            .powi(self.k as i32)
+        (1_f64 - E.powf(-1_f64 * self.k as f64 * self.n as f64 / self.m as f64)).powi(self.k as i32)
     }
 }
 
