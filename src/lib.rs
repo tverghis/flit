@@ -16,7 +16,7 @@ const LN2_SQUARED: f64 = LN_2 * LN_2;
 /// - [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/)
 /// - [Bloom Filter Calculator](https://hur.st/bloomfilter/)
 #[derive(Debug)]
-pub struct BloomFilter<T: Hash> {
+pub struct BloomFilter<T> {
     n: usize,
     m: usize,
     k: usize,
@@ -71,7 +71,7 @@ mod tests {
 
     #[test]
     fn test_num_bits_and_hashes() {
-        let filter = BloomFilter::new(0.01_f64, 216553);
+        let filter = BloomFilter::<&str>::new(0.01_f64, 216553);
 
         assert_eq!(filter.m, 2_075_674);
         assert_eq!(filter.k, 7);
@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     fn test_false_positive_rate_empty() {
-        let filter = BloomFilter::new(0.01_f64, 216553);
+        let filter = BloomFilter::<&str>::new(0.01_f64, 216553);
 
         // False positive rate with nothing added to the filter should be 0.
         assert_eq!(filter.false_positive_rate(), 0_f64);
