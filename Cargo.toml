@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 bitvec = "0.10"
+twox-hash = "1.1"
