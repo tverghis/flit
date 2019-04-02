@@ -1,0 +1,8 @@
+[package]
+name = "flit"
+version = "0.1.0"
+authors = ["Tarun Verghis <tarun.verghis@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+bitvec = "0.10"
