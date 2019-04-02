@@ -1,5 +1,6 @@
 use std::f64::consts::LN_2;
 use std::hash::Hash;
+use std::marker::PhantomData;
 
 const LN2_SQUARED: f64 = LN_2 * LN_2;
 
@@ -15,13 +16,14 @@ const LN2_SQUARED: f64 = LN_2 * LN_2;
 /// - [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/)
 /// - [Bloom Filter Calculator](https://hur.st/bloomfilter/)
 #[derive(Debug)]
-pub struct BloomFilter {
+pub struct BloomFilter<T: Hash> {
     n: usize,
     m: usize,
     k: usize,
+    _phantom: PhantomData<T>,
 }
 
-impl BloomFilter {
+impl<T: Hash> BloomFilter<T> {
     /// Creates a new Bloom filter based on the required false positive rate and the estimated
     /// number of items that will be added to the filter.
     ///
@@ -49,10 +51,11 @@ impl BloomFilter {
             n: 0,
             m: num_bits.ceil() as usize,
             k: num_hashes.ceil() as usize,
+            _phantom: PhantomData,
         }
     }
 
-    pub fn add<T: Hash>(item: T) {}
+    pub fn add(item: T) {}
 
     /// Calculates the current expected false positive rate given the number of items in the
     /// filter.
