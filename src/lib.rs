@@ -110,7 +110,8 @@ impl<T: Hash> BloomFilter<T> {
     /// Calculates the current expected false positive rate given the number of items in the
     /// filter.
     pub fn false_positive_rate(&self) -> f64 {
-        (1_f64 - E.powf(-1_f64 * self.k as f64 * self.n as f64 / self.m as f64)).powi(self.k as i32)
+        (1_f64 - E.powf(-1_f64 * f64::from(self.k) * self.n as f64 / self.m as f64))
+            .powi(self.k as i32)
     }
 }
 
@@ -127,7 +128,7 @@ fn item_indices<T: Hash>(item: &T, m: u64, k: u32) -> Vec<usize> {
     let lower = hash as u32;
 
     (0..k)
-        .map(|i| ((upper.wrapping_add(lower.wrapping_mul(i)) as u64) % m) as usize)
+        .map(|i| (u64::from(upper.wrapping_add(lower.wrapping_mul(i))) % m) as usize)
         .collect()
 }
 
