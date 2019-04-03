@@ -8,6 +8,7 @@ description = "Bloom filter backed by xxHash"
 repository = "https://github.com/tverghis/flit"
 keywords = ["bloom", "filter"]
 categories = ["data-structures"]
+readme = "README.md"
 
 [dependencies]
 bitvec = "0.10"
