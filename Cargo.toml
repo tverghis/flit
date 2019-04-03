@@ -6,7 +6,7 @@ edition = "2018"
 license = "MIT"
 description = "Bloom filter backed by xxHash"
 repository = "https://github.com/tverghis/flit"
-keywords = ["bloom", "filter"]
+keywords = ["bloom", "filter", "bloomfilter"]
 categories = ["data-structures"]
 readme = "README.md"
 
