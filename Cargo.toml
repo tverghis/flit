@@ -3,6 +3,11 @@ name = "flit"
 version = "0.1.0"
 authors = ["Tarun Verghis <tarun.verghis@gmail.com>"]
 edition = "2018"
+license = "MIT"
+description = "Bloom filter backed by xxHash"
+repository = "https://github.com/tverghis/flit"
+keywords = ["bloom", "filter"]
+categories = ["data-structures"]
 
 [dependencies]
 bitvec = "0.10"
