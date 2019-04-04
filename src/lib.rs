@@ -115,11 +115,11 @@ impl<T: Hash> BloomFilter<T> {
     }
 }
 
-/// Returns a `Vec` of the indices that need to be updated in a Bloom filter for a given `item`.
+/// Returns an iterator over the indices that need to be updated in a Bloom filter for a given `item`.
 ///
 /// `m` is the size (in bits) of the filter.
 /// `k` is the number of hash functions that the input needs to be run through.
-fn item_indices<T: Hash>(item: &T, m: u64, k: u32) -> Vec<usize> {
+fn item_indices<T: Hash>(item: &T, m: u64, k: u32) -> impl Iterator<Item = usize> {
     let mut hasher = XxHash::default();
     item.hash(&mut hasher);
     let hash = hasher.finish();
@@ -127,9 +127,7 @@ fn item_indices<T: Hash>(item: &T, m: u64, k: u32) -> Vec<usize> {
     let upper = (hash >> 32) as u32;
     let lower = hash as u32;
 
-    (0..k)
-        .map(|i| (u64::from(upper.wrapping_add(lower.wrapping_mul(i))) % m) as usize)
-        .collect()
+    (0..k).map(move |i| (u64::from(upper.wrapping_add(lower.wrapping_mul(i))) % m) as usize)
 }
 
 #[cfg(test)]
