@@ -17,9 +17,9 @@
 //! - [Bloom Filter Calculator](https://hur.st/bloomfilter/)
 use bitvec::{bitvec, BitVec};
 use std::f64::consts::{E, LN_2};
-use std::hash::{Hash, Hasher};
+use std::hash::{BuildHasher, Hash, Hasher};
 use std::marker::PhantomData;
-use twox_hash::XxHash;
+use twox_hash::RandomXxHashBuilder;
 
 const LN2_SQUARED: f64 = LN_2 * LN_2;
 
@@ -44,6 +44,7 @@ pub struct BloomFilter<T> {
     m: u64,
     k: u32,
     bit_vec: BitVec,
+    build_hasher: RandomXxHashBuilder,
     _phantom: PhantomData<T>,
 }
 
@@ -79,13 +80,14 @@ impl<T: Hash> BloomFilter<T> {
             m: num_bits,
             k: num_hashes,
             bit_vec: bitvec![0; num_bits as usize],
+            build_hasher: RandomXxHashBuilder::default(),
             _phantom: PhantomData,
         }
     }
 
     /// Adds the `item` to the filter by setting the appropriate bits in the filter to `true`.
     pub fn add(&mut self, item: &T) {
-        for i in item_indices(item, self.m, self.k) {
+        for i in indices_for_hash(split_hash(item, &self.build_hasher), self.m, self.k) {
             self.bit_vec.set(i, true);
         }
 
@@ -98,7 +100,7 @@ impl<T: Hash> BloomFilter<T> {
     /// If this function returns true, the filter *might* contain the item, but it might also be a
     /// false-positive.
     pub fn might_contain(&self, item: &T) -> bool {
-        for i in item_indices(item, self.m, self.k) {
+        for i in indices_for_hash(split_hash(item, &self.build_hasher), self.m, self.k) {
             if !self.bit_vec[i] {
                 return false;
             }
@@ -115,19 +117,27 @@ impl<T: Hash> BloomFilter<T> {
     }
 }
 
-/// Returns an iterator over the indices that need to be updated in a Bloom filter for a given `item`.
-///
-/// `m` is the size (in bits) of the filter.
-/// `k` is the number of hash functions that the input needs to be run through.
-fn item_indices<T: Hash>(item: &T, m: u64, k: u32) -> impl Iterator<Item = usize> {
-    let mut hasher = XxHash::default();
+/// Hashes `item` using a `Hasher`, and produces a two-element tuple.
+/// The first element is the "upper half" of the `u64` produced by the hash function, and the second
+/// element is the "lower half".
+fn split_hash<T: Hash>(item: &T, hasher: &impl BuildHasher) -> (u32, u32) {
+    let mut hasher = hasher.build_hasher();
     item.hash(&mut hasher);
     let hash = hasher.finish();
 
-    let upper = (hash >> 32) as u32;
-    let lower = hash as u32;
+    (((hash >> 32) as u32), hash as u32)
+}
 
-    (0..k).map(move |i| (u64::from(upper.wrapping_add(lower.wrapping_mul(i))) % m) as usize)
+/// Returns the indices to be set to "true" in a Bloom filter for a given hash.
+///
+/// `split_hash` is a tuple of two `u32` values produced by passing the item to be added through
+/// the `split_hash` function.
+/// `m` is the number of indices in the filter.
+/// `k` is the number of hash functions that the item should be passed through.
+fn indices_for_hash(split_hash: (u32, u32), m: u64, k: u32) -> impl Iterator<Item = usize> {
+    (0..k).map(move |i| {
+        (u64::from(split_hash.0.wrapping_add(split_hash.1.wrapping_mul(i))) % m) as usize
+    })
 }
 
 #[cfg(test)]
