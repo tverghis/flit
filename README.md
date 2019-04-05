@@ -27,3 +27,15 @@ assert_eq!(filter.might_contain(&"Hello, world!"), true); // probably true
 assert_eq!(filter.might_contain(&"Dogs are cool!"), false); // definitely false!
 ```
 
+## Benchmarks
+
+Benchmarking is done using [`criterion`](https://crates.io/crates/criterion).
+
+Simple benchmarks are provided for adding 100, 1000 and 10000 `u32`s to a BloomFilter. To run the benchmarks, run:
+```
+cargo bench
+
+add 100                 time:   [22.454 us 22.477 us 22.507 us]
+add 1000                time:   [224.44 us 224.65 us 224.90 us]
+add 10000               time:   [2.2424 ms 2.2443 ms 2.2463 ms]
+```
