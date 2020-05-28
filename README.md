@@ -1,7 +1,7 @@
 # flit
 
 [![](http://meritbadge.herokuapp.com/flit)](https://crates.io/crates/flit)
-[![](https://img.shields.io/badge/docs-flit%20v0.1.1-green.svg)](https://docs.rs/flit/0.1.1/flit/)
+[![](https://img.shields.io/badge/docs-flit%20v0.1.2-green.svg)](https://docs.rs/flit/0.1.2/flit/)
 
 `BloomFilter` is a probabilistic data structure that can quickly and definitively conclude that it does
 *not* contain an item. On the other hand, it can only conclude that it *probably* contains an
