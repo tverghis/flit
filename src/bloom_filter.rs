@@ -18,7 +18,7 @@
 //! - [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/)
 //! - [Bloom Filter Calculator](https://hur.st/bloomfilter/)
 
-use bitvec::{bitvec, BitVec};
+use bitvec::bitvec;
 use std::f64::consts::{E, LN_2};
 use std::hash::{BuildHasher, Hash, Hasher};
 use std::marker::PhantomData;
@@ -46,7 +46,7 @@ pub struct BloomFilter<T> {
     n: u64,
     m: u64,
     k: u32,
-    bit_vec: BitVec,
+    bit_vec: bitvec::vec::BitVec,
     build_hasher: RandomXxHashBuilder,
     _phantom: PhantomData<T>,
 }
