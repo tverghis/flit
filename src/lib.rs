@@ -9,3 +9,4 @@
 //! [`BloomFilter`]: bloom_filter/struct.BloomFilter.html
 pub mod bloom_filter;
 pub use bloom_filter::BloomFilter;
+pub mod error;
